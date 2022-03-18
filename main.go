@@ -3,6 +3,7 @@ package main
 import (
 	"bwastartup/handler"
 	"bwastartup/user"
+
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -27,6 +28,7 @@ func main() {
 	api := router.Group("api/v1")
 
 	api.POST("/users", userHandler.RegisterUSer)
+	api.POST("/sessions", userHandler.Login)
 
 	router.Run()
 }
