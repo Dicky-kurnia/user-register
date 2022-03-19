@@ -1,9 +1,9 @@
 package handler
 
 import (
+	"bwastartup/auth"
 	"bwastartup/helper"
 	"bwastartup/user"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,10 +11,11 @@ import (
 
 type userHandler struct {
 	userService user.Service
+	authService auth.Service
 }
 
-func NewUserHandler(userService user.Service) *userHandler {
-	return &userHandler{userService}
+func NewUserHandler(userService user.Service, authSevice auth.Service) *userHandler {
+	return &userHandler{userService, authSevice}
 }
 
 func (h *userHandler) RegisterUSer(c *gin.Context) {
@@ -38,11 +39,17 @@ func (h *userHandler) RegisterUSer(c *gin.Context) {
 	if err != nil {
 		response := helper.APIResponse("Register Account  Failed", http.StatusBadRequest, "succsess", nil)
 		c.JSON(http.StatusOK, response)
+		return
 	}
 
-	// token, err := h.jwtService.GenerateToken()
+	token, err := h.authService.GenerateToken(newUser.ID)
+	if err != nil {
+		response := helper.APIResponse("Register Account  Failed", http.StatusBadRequest, "succsess", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
 
-	formatter := user.FormatUser(newUser, "tokentokentokentoken")
+	formatter := user.FormatUser(newUser, token)
 
 	response := helper.APIResponse("Accound has been registered", http.StatusOK, "succsess", formatter)
 	c.JSON(http.StatusOK, response)
@@ -76,7 +83,14 @@ func (h *userHandler) Login(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, response)
 	}
 
-	formatter := user.FormatUser(loggedinUser, "tokentokentokentoken")
+	token, err := h.authService.GenerateToken(loggedinUser.ID)
+	if err != nil {
+		response := helper.APIResponse("Login Failed", http.StatusBadRequest, "succsess", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+
+	formatter := user.FormatUser(loggedinUser, token)
 
 	response := helper.APIResponse("Successfuly loggedin", http.StatusOK, "succsess", formatter)
 	c.JSON(http.StatusOK, response)
@@ -145,7 +159,7 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 
 	userID := 1
 
-	path := fmt.Sprintf("images/%d-%s", userID, file.Filename)
+	path := "images/" + file.Filename
 
 	err = c.SaveUploadedFile(file, path)
 	if err != nil {
