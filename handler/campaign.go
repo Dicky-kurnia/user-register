@@ -150,6 +150,7 @@ func (h *campaignHandler) UploadImage(c *gin.Context) {
 
 	currentUser := c.MustGet("currentUser").(user.User)
 	input.User = currentUser
+
 	userID := currentUser.ID
 
 	file, err := c.FormFile("file")
