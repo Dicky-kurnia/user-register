@@ -11,7 +11,12 @@ require (
 require github.com/dgrijalva/jwt-go v3.2.0+incompatible
 
 require (
-	github.com/gosimple/slug v1.12.0 
+	github.com/midtrans/midtrans-go v1.3.0 // indirect
+	github.com/veritrans/go-midtrans v0.0.0-20210616100512-16326c5eeb00 // indirect
+)
+
+require (
+	github.com/gosimple/slug v1.12.0
 	github.com/gosimple/unidecode v1.0.1 // indirect
 )
 
