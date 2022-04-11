@@ -11,6 +11,7 @@ require (
 require github.com/dgrijalva/jwt-go v3.2.0+incompatible
 
 require (
+	github.com/gin-contrib/cors v1.3.1 // indirect
 	github.com/midtrans/midtrans-go v1.3.0 // indirect
 	github.com/veritrans/go-midtrans v0.0.0-20210616100512-16326c5eeb00 // indirect
 )
